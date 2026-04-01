@@ -1,130 +1,779 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>DotKnot</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DotKnot — We build things for the web</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' rx='18' fill='%231e1510'/%3E%3Ctext font-family='Georgia,serif' font-weight='700' font-size='18' fill='%23f5b49a' x='40' y='4' text-anchor='middle' dominant-baseline='hanging'%3EK%3C/text%3E%3Ctext font-family='Georgia,serif' font-weight='700' font-size='18' fill='%23f5b49a' x='40' y='24' text-anchor='middle' dominant-baseline='hanging'%3EN%3C/text%3E%3Ctext font-family='Georgia,serif' font-weight='700' font-size='18' fill='%23f5b49a' x='40' y='60' text-anchor='middle' dominant-baseline='hanging'%3ET%3C/text%3E%3Ctext font-family='Georgia,serif' font-weight='700' font-size='18' fill='%23fdf8f2' x='4' y='40' text-anchor='start' dominant-baseline='middle'%3ED%3C/text%3E%3Ctext font-family='Georgia,serif' font-weight='700' font-size='18' fill='%23fdf8f2' x='58' y='40' text-anchor='start' dominant-baseline='middle'%3ET%3C/text%3E%3Ccircle cx='40' cy='40' r='13' fill='%231e1510'/%3E%3Ccircle cx='40' cy='40' r='13' fill='none' stroke='%23fdf8f2' stroke-width='3'/%3E%3Cpath d='M40 27 A13 13 0 0 1 40 53' fill='none' stroke='%23f5b49a' stroke-width='3'/%3E%3Ccircle cx='40' cy='40' r='3' fill='%23f5b49a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;1,300;1,600&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  <style>
-    body {
-      margin: 0;
-      font-family: system-ui, sans-serif;
-      background: #0b0f19;
-      color: #e5e7eb;
-    }
+:root {
+  --bg:       #fdf8f2;
+  --bg2:      #f5ede0;
+  --bg3:      #ede0ce;
+  --ink:      #2b2118;
+  --ink2:     #6b5744;
+  --ink3:     #a08878;
+  --peach:    #e8825a;
+  --peach-lt: #f5b49a;
+  --sage:     #6b8f71;
+  --sage-lt:  #c2d9c5;
+  --sky:      #5b8db8;
+  --sky-lt:   #c1d8ed;
+  --yellow:   #f2c94c;
+  --border:   rgba(43,33,24,0.1);
+  --serif:    'Fraunces', Georgia, serif;
+  --sans:     'Nunito', sans-serif;
+  --radius:   16px;
+}
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      padding: 20px 40px;
-      align-items: center;
-    }
+html { scroll-behavior: smooth; }
+body { font-family: var(--sans); background: var(--bg); color: var(--ink); overflow-x: hidden; }
 
-    header h1 {
-      font-size: 22px;
-    }
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.1rem 3rem;
+  background: rgba(253,248,242,0.88);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  animation: slideDown .5s ease both;
+}
+@keyframes slideDown { from { opacity:0; transform:translateY(-12px); } to { opacity:1; transform:none; } }
 
-    nav a {
-      margin-left: 20px;
-      color: #9ca3af;
-      text-decoration: none;
-    }
+.logo {
+  display: flex; align-items: center; gap: .55rem;
+  font-family: var(--serif); font-size: 1.45rem; font-weight: 600;
+  color: var(--ink); text-decoration: none; letter-spacing: -.01em;
+}
+.logo-knot {
+  width: 30px; height: 30px;
+  background: var(--peach);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .9rem;
+  flex-shrink: 0;
+  transition: transform .3s;
+}
+.logo:hover .logo-knot { transform: rotate(20deg) scale(1.1); }
 
-    .hero {
-      text-align: center;
-      padding: 120px 20px;
-    }
+nav ul { list-style: none; display: flex; gap: 2.2rem; }
+nav ul a { font-size: .875rem; font-weight: 500; color: var(--ink2); text-decoration: none; transition: color .2s; }
+nav ul a:hover { color: var(--peach); }
 
-    .hero h2 {
-      font-size: 48px;
-      margin-bottom: 20px;
-    }
+.nav-btn {
+  background: var(--peach); color: white;
+  padding: .55rem 1.4rem; border-radius: 100px;
+  font-size: .82rem; font-weight: 600; text-decoration: none;
+  transition: background .2s, transform .15s;
+  white-space: nowrap;
+}
+.nav-btn:hover { background: #d46a42; transform: translateY(-1px); }
 
-    .hero span {
-      color: #38bdf8;
-    }
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center;
+  padding: 7rem 2rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
 
-    .hero p {
-      color: #9ca3af;
-      font-size: 18px;
-      max-width: 600px;
-      margin: auto;
-    }
+/* Decorative blobs */
+.blob {
+  position: absolute; border-radius: 50%;
+  filter: blur(60px); opacity: .35; pointer-events: none;
+  animation: drift 8s ease-in-out infinite alternate;
+}
+.blob-1 { width: 420px; height: 420px; background: #f5b49a; top: -80px; left: -100px; animation-delay: 0s; }
+.blob-2 { width: 300px; height: 300px; background: #c2d9c5; top: 10%; right: -60px; animation-delay: 2s; }
+.blob-3 { width: 260px; height: 260px; background: #f2c94c; bottom: 5%; left: 20%; animation-delay: 4s; }
+@keyframes drift { from { transform: translate(0,0) scale(1); } to { transform: translate(20px,30px) scale(1.08); } }
 
-    .btn {
-      margin-top: 30px;
-      display: inline-block;
-      padding: 14px 28px;
-      background: #38bdf8;
-      color: #0b0f19;
-      border-radius: 10px;
-      text-decoration: none;
-      font-weight: bold;
-    }
+.hero-tag {
+  display: inline-flex; align-items: center; gap: .5rem;
+  background: white; border: 1px solid var(--border);
+  border-radius: 100px; padding: .4rem 1rem;
+  font-size: .78rem; font-weight: 600; color: var(--ink2);
+  letter-spacing: .04em; margin-bottom: 2rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+  animation: popIn .5s .2s ease both;
+}
+.hero-tag-dot { width: 8px; height: 8px; background: var(--sage); border-radius: 50%; animation: pulse 2s ease infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
+@keyframes popIn { from{opacity:0;transform:scale(.9)} to{opacity:1;transform:scale(1)} }
 
-    .features {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      padding: 60px 40px;
-    }
+h1 {
+  font-family: var(--serif); font-weight: 600;
+  font-size: clamp(2.8rem, 6vw, 5.2rem);
+  line-height: 1.08; letter-spacing: -.025em;
+  margin-bottom: 1.5rem; color: var(--ink);
+  animation: riseUp .7s .3s ease both;
+}
+h1 em { color: var(--peach); font-style: italic; }
+h1 .line2 { display: block; }
 
-    .card {
-      background: #111827;
-      padding: 30px;
-      border-radius: 16px;
-    }
+.hero-sub {
+  font-size: 1.1rem; line-height: 1.75; font-weight: 300;
+  color: var(--ink2); max-width: 520px; margin: 0 auto 2.5rem;
+  animation: riseUp .7s .45s ease both;
+}
 
-    .card h3 {
-      margin-top: 0;
-    }
+@keyframes riseUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
 
-    footer {
-      text-align: center;
-      padding: 30px;
-      color: #6b7280;
-    }
-  </style>
+.hero-actions {
+  display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+  animation: riseUp .7s .6s ease both;
+}
+
+.btn-warm {
+  background: var(--peach); color: white;
+  padding: .95rem 2.2rem; border-radius: 100px;
+  font-family: var(--sans); font-size: .92rem; font-weight: 600;
+  text-decoration: none; border: none; cursor: pointer;
+  transition: background .2s, transform .15s, box-shadow .2s;
+  box-shadow: 0 4px 20px rgba(232,130,90,.3);
+  display: inline-flex; align-items: center; gap: .5rem;
+}
+.btn-warm:hover { background: #d46a42; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(232,130,90,.4); }
+
+.btn-outline {
+  background: white; color: var(--ink);
+  padding: .95rem 2rem; border-radius: 100px;
+  font-family: var(--sans); font-size: .92rem; font-weight: 500;
+  text-decoration: none; border: 1.5px solid var(--border);
+  cursor: pointer; transition: border-color .2s, transform .15s;
+  display: inline-flex; align-items: center; gap: .5rem;
+}
+.btn-outline:hover { border-color: var(--peach); transform: translateY(-2px); }
+
+/* Hero floating cards */
+.hero-cards {
+  display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+  margin-top: 4rem;
+  animation: riseUp .7s .75s ease both;
+}
+.hero-mini-card {
+  background: white; border: 1px solid var(--border);
+  border-radius: 14px; padding: 1rem 1.4rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,.06);
+  display: flex; align-items: center; gap: .75rem;
+  font-size: .82rem; font-weight: 500; color: var(--ink2);
+  transition: transform .25s, box-shadow .25s;
+}
+.hero-mini-card:hover { transform: translateY(-4px); box-shadow: 0 10px 32px rgba(0,0,0,.1); }
+.mini-icon { font-size: 1.4rem; }
+
+/* ── TRUSTED BY ── */
+.trusted {
+  background: var(--bg2);
+  padding: 2.5rem 3rem;
+  text-align: center;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.trusted-label { font-size: .75rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ink3); margin-bottom: 1.5rem; }
+.trusted-logos { display: flex; gap: 3rem; justify-content: center; align-items: center; flex-wrap: wrap; }
+.trusted-logo {
+  font-family: var(--serif); font-size: 1.1rem; font-weight: 600;
+  color: var(--ink3); opacity: .5; transition: opacity .2s;
+  cursor: default;
+}
+.trusted-logo:hover { opacity: 1; }
+
+/* ── HOW WE WORK ── */
+.how {
+  padding: 6rem 3rem;
+  max-width: 1100px; margin: 0 auto;
+}
+.section-badge {
+  display: inline-flex; align-items: center; gap: .5rem;
+  background: var(--sage-lt); color: var(--sage);
+  border-radius: 100px; padding: .35rem 1rem;
+  font-size: .75rem; font-weight: 600; letter-spacing: .05em;
+  text-transform: uppercase; margin-bottom: 1.25rem;
+}
+h2 {
+  font-family: var(--serif); font-weight: 600;
+  font-size: clamp(1.9rem, 3.5vw, 3rem);
+  letter-spacing: -.02em; line-height: 1.15;
+  color: var(--ink); margin-bottom: 1rem;
+}
+h2 em { color: var(--peach); font-style: italic; }
+.section-sub { font-size: 1rem; color: var(--ink2); font-weight: 300; line-height: 1.7; max-width: 520px; margin-bottom: 3.5rem; }
+
+.steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 2rem; }
+.step {
+  background: white; border-radius: var(--radius);
+  padding: 2rem; border: 1px solid var(--border);
+  position: relative; overflow: hidden;
+  transition: transform .3s, box-shadow .3s;
+}
+.step:hover { transform: translateY(-6px); box-shadow: 0 16px 48px rgba(0,0,0,.09); }
+.step-num {
+  font-family: var(--serif); font-size: 4rem; font-weight: 600;
+  color: var(--bg3); line-height: 1; margin-bottom: .75rem;
+  transition: color .3s;
+}
+.step:hover .step-num { color: var(--peach-lt); }
+.step h3 { font-family: var(--serif); font-size: 1.35rem; font-weight: 600; margin-bottom: .6rem; }
+.step p { font-size: .875rem; color: var(--ink2); line-height: 1.7; font-weight: 300; }
+
+/* ── SERVICES ── */
+.services {
+  background: var(--ink);
+  padding: 6rem 3rem;
+  position: relative; overflow: hidden;
+}
+.services::before {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(ellipse at 30% 50%, rgba(232,130,90,.08) 0%, transparent 60%),
+              radial-gradient(ellipse at 80% 20%, rgba(107,143,113,.08) 0%, transparent 50%);
+  pointer-events:none;
+}
+.services-inner { max-width: 1100px; margin: 0 auto; }
+.services .section-badge { background: rgba(107,143,113,.2); color: #a0c9a6; }
+.services h2 { color: white; }
+.services .section-sub { color: rgba(253,248,242,.5); }
+
+.services-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1.5px; background: rgba(255,255,255,.06); border-radius: var(--radius); overflow: hidden; }
+.service-card {
+  background: rgba(43,33,24,.6); padding: 2.5rem;
+  transition: background .3s;
+  position: relative;
+}
+.service-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background: linear-gradient(90deg, var(--peach), var(--yellow));
+  transform: scaleX(0); transform-origin: left; transition: transform .35s;
+}
+.service-card:hover { background: rgba(43,33,24,.85); }
+.service-card:hover::before { transform: scaleX(1); }
+.service-emoji { font-size: 2rem; margin-bottom: 1.25rem; display: block; }
+.service-card h3 { font-family: var(--serif); font-size: 1.3rem; color: white; margin-bottom: .65rem; }
+.service-card p { font-size: .875rem; color: rgba(253,248,242,.45); line-height: 1.7; font-weight: 300; }
+
+/* ── WORK / PROJECTS ── */
+.work {
+  padding: 6rem 3rem;
+  max-width: 1100px; margin: 0 auto;
+}
+.projects { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.project-card {
+  border-radius: var(--radius); overflow: hidden;
+  border: 1px solid var(--border);
+  transition: transform .3s, box-shadow .3s;
+  cursor: pointer;
+}
+.project-card:hover { transform: translateY(-6px); box-shadow: 0 20px 56px rgba(0,0,0,.12); }
+.project-thumb {
+  height: 220px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 3.5rem;
+  position: relative; overflow: hidden;
+}
+.project-thumb::after {
+  content:''; position:absolute; inset:0;
+  background: rgba(0,0,0,.08);
+  transition: background .3s;
+}
+.project-card:hover .project-thumb::after { background: rgba(0,0,0,.15); }
+.thumb-1 { background: linear-gradient(135deg, #fde8dc, #f9c7b0); }
+.thumb-2 { background: linear-gradient(135deg, #d4e9d7, #a8cead); }
+.thumb-3 { background: linear-gradient(135deg, #d4e3f0, #a8c4e0); }
+.thumb-4 { background: linear-gradient(135deg, #f5e9c8, #eace7f); }
+.project-info { background: white; padding: 1.5rem; }
+.project-info h3 { font-family: var(--serif); font-size: 1.2rem; margin-bottom: .4rem; }
+.project-info p { font-size: .82rem; color: var(--ink3); font-weight: 300; }
+.project-tags { display: flex; gap: .5rem; margin-top: .9rem; flex-wrap: wrap; }
+.tag {
+  font-size: .7rem; font-weight: 600; letter-spacing: .05em;
+  padding: .25rem .7rem; border-radius: 100px;
+  background: var(--bg2); color: var(--ink2);
+}
+
+/* ── TESTIMONIALS ── */
+.testimonials {
+  background: var(--bg2);
+  padding: 6rem 3rem;
+  border-top: 1px solid var(--border);
+}
+.testimonials-inner { max-width: 1100px; margin: 0 auto; }
+.testimonials .section-badge { background: rgba(232,130,90,.15); color: var(--peach); }
+.testi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: 3rem; }
+.testi {
+  background: white; border-radius: var(--radius);
+  padding: 2rem; border: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  transition: transform .3s, box-shadow .3s;
+}
+.testi:hover { transform: translateY(-5px); box-shadow: 0 14px 42px rgba(0,0,0,.08); }
+.testi-stars { color: var(--yellow); font-size: .9rem; margin-bottom: 1rem; letter-spacing: .1em; }
+.testi p { font-size: .9rem; line-height: 1.75; color: var(--ink); font-weight: 300; flex: 1; margin-bottom: 1.5rem; }
+.testi-author { display: flex; align-items: center; gap: .75rem; }
+.avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--bg3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.15rem; border: 2px solid var(--border);
+}
+.author-name { font-size: .82rem; font-weight: 600; }
+.author-co { font-size: .75rem; color: var(--ink3); }
+
+/* ── PRICING ── */
+.pricing {
+  padding: 6rem 3rem;
+  max-width: 1100px; margin: 0 auto;
+}
+.pricing-grid { display: grid; grid-template-columns: 1fr 1.05fr 1fr; gap: 1.5rem; align-items: start; margin-top: 3rem; }
+.price-card {
+  background: white; border-radius: var(--radius);
+  padding: 2.25rem; border: 1px solid var(--border);
+  transition: transform .3s, box-shadow .3s;
+}
+.price-card:hover { transform: translateY(-5px); box-shadow: 0 14px 42px rgba(0,0,0,.08); }
+.price-card.pop {
+  background: var(--peach); color: white; border-color: transparent;
+  box-shadow: 0 8px 36px rgba(232,130,90,.35);
+}
+.price-card.pop:hover { box-shadow: 0 16px 52px rgba(232,130,90,.45); }
+.pop-label {
+  font-size: .7rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; background: white; color: var(--peach);
+  border-radius: 100px; padding: .25rem .8rem; display: inline-block; margin-bottom: 1.25rem;
+}
+.plan-name { font-size: .75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink3); margin-bottom: 1rem; }
+.price-card.pop .plan-name { color: rgba(255,255,255,.7); }
+.price-big { font-family: var(--serif); font-size: 3.2rem; font-weight: 600; line-height: 1; letter-spacing: -.02em; }
+.price-big sup { font-size: 1.3rem; font-family: var(--sans); vertical-align: super; }
+.price-period { font-size: .8rem; font-weight: 400; color: var(--ink3); }
+.price-card.pop .price-period { color: rgba(255,255,255,.65); }
+.price-desc { font-size: .82rem; color: var(--ink2); margin: .75rem 0 1.75rem; line-height: 1.6; font-weight: 300; }
+.price-card.pop .price-desc { color: rgba(255,255,255,.75); }
+.price-features { list-style: none; display: flex; flex-direction: column; gap: .65rem; margin-bottom: 2rem; }
+.price-features li { font-size: .855rem; display: flex; align-items: flex-start; gap: .55rem; color: var(--ink); line-height: 1.5; }
+.price-card.pop .price-features li { color: white; }
+.price-features li::before { content: '✓'; font-weight: 700; color: var(--sage); flex-shrink: 0; margin-top: .1rem; }
+.price-card.pop .price-features li::before { color: rgba(255,255,255,.8); }
+.price-btn {
+  width: 100%; padding: .85rem; border-radius: 100px;
+  font-family: var(--sans); font-size: .875rem; font-weight: 600;
+  cursor: pointer; transition: background .2s, transform .15s;
+  border: 2px solid var(--ink);
+  background: transparent; color: var(--ink);
+}
+.price-btn:hover { background: var(--ink); color: white; transform: translateY(-1px); }
+.price-card.pop .price-btn { background: white; color: var(--peach); border-color: white; }
+.price-card.pop .price-btn:hover { background: rgba(255,255,255,.88); }
+
+/* ── CTA ── */
+.cta {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  padding: 6rem 3rem;
+  text-align: center;
+}
+.cta-inner { max-width: 640px; margin: 0 auto; }
+.cta-inner h2 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem; }
+.cta-inner p { color: var(--ink2); font-size: 1rem; font-weight: 300; line-height: 1.7; margin-bottom: 2rem; }
+.cta-form {
+  display: flex; gap: .75rem; max-width: 420px; margin: 0 auto;
+}
+.cta-input {
+  flex: 1; padding: .9rem 1.25rem;
+  border: 1.5px solid var(--border); border-radius: 100px;
+  font-family: var(--sans); font-size: .9rem; background: white;
+  color: var(--ink); outline: none; transition: border-color .2s;
+}
+.cta-input:focus { border-color: var(--peach); }
+.cta-input::placeholder { color: var(--ink3); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--ink);
+  padding: 3rem 3rem;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem;
+}
+.footer-logo { font-family: var(--serif); font-size: 1.3rem; color: white; }
+.footer-logo .dot { color: var(--peach); }
+.footer-links { display: flex; gap: 1.75rem; }
+.footer-links a { font-size: .8rem; color: rgba(253,248,242,.35); text-decoration: none; transition: color .2s; }
+.footer-links a:hover { color: var(--peach); }
+.footer-copy { font-size: .75rem; color: rgba(253,248,242,.25); }
+
+/* ── REVEAL ── */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .65s ease, transform .65s ease; }
+.reveal.in { opacity: 1; transform: none; }
+.reveal.d1 { transition-delay: .1s; }
+.reveal.d2 { transition-delay: .2s; }
+.reveal.d3 { transition-delay: .3s; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 860px) {
+  nav { padding: 1rem 1.5rem; }
+  nav ul { display: none; }
+  .steps, .services-grid, .projects,
+  .testi-grid, .pricing-grid { grid-template-columns: 1fr; }
+  .how, .services-inner, .work, .testimonials-inner, .pricing { padding: 4rem 1.5rem; }
+  .hero { padding: 6rem 1.5rem 3rem; }
+  footer { flex-direction: column; text-align: center; align-items: center; }
+}
+</style>
 </head>
-
 <body>
 
-<header>
-  <h1>DotKnot</h1>
-  <nav>
-    <a href="#">Product</a>
-    <a href="#">Features</a>
-    <a href="#">Docs</a>
-    <a href="#">Contact</a>
-  </nav>
-</header>
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">
+    <svg width="36" height="36" viewBox="0 0 80 80" style="flex-shrink:0;">
+      <rect width="80" height="80" rx="18" fill="rgba(232,130,90,.12)"/>
+      <text font-family="Fraunces,Georgia,serif" font-weight="700" font-size="18" fill="#f5b49a" x="40" y="4"  text-anchor="middle" dominant-baseline="hanging">K</text>
+      <text font-family="Fraunces,Georgia,serif" font-weight="700" font-size="18" fill="#f5b49a" x="40" y="24" text-anchor="middle" dominant-baseline="hanging">N</text>
+      <text font-family="Fraunces,Georgia,serif" font-weight="700" font-size="18" fill="#f5b49a" x="40" y="60" text-anchor="middle" dominant-baseline="hanging">T</text>
+      <text font-family="Fraunces,Georgia,serif" font-weight="700" font-size="18" fill="#2b2118" x="4"  y="40" text-anchor="start" dominant-baseline="middle">D</text>
+      <text font-family="Fraunces,Georgia,serif" font-weight="700" font-size="18" fill="#2b2118" x="58" y="40" text-anchor="start" dominant-baseline="middle">T</text>
+      <circle cx="40" cy="40" r="13" fill="#fdf8f2" stroke="none"/>
+      <circle cx="40" cy="40" r="13" fill="none" stroke="#2b2118" stroke-width="3"/>
+      <path d="M40 27 A13 13 0 0 1 40 53" fill="none" stroke="#f5b49a" stroke-width="3"/>
+      <circle cx="40" cy="40" r="3" fill="#f5b49a"/>
+    </svg>
+    DotKnot
+  </a>
+  <ul>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+  </ul>
+  <a href="#contact" class="nav-btn">Let's talk →</a>
+</nav>
 
+<!-- HERO -->
 <section class="hero">
-  <h2>Connect Ideas.<br><span>Build Smarter.</span></h2>
-  <p>DotKnot is a modern platform for organizing, building, and launching ideas into real digital products.</p>
-  <a href="#" class="btn">Get Started</a>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <div class="hero-tag">
+    <span class="hero-tag-dot"></span>
+    Available for new projects · dotknot.co.uk
+  </div>
+
+  <h1>
+    We connect your <em>ideas</em>
+    <span class="line2">to the web.</span>
+  </h1>
+  <p class="hero-sub">DotKnot is a friendly UK-based digital studio. We design and build websites, apps, and digital experiences that people actually enjoy using.</p>
+
+  <div class="hero-actions">
+    <a href="#contact" class="btn-warm">Start a project ✦</a>
+    <a href="#work" class="btn-outline">See our work →</a>
+  </div>
+
+  <div class="hero-cards">
+    <div class="hero-mini-card"><span class="mini-icon">🎨</span> Design-led</div>
+    <div class="hero-mini-card"><span class="mini-icon">⚡</span> Fast delivery</div>
+    <div class="hero-mini-card"><span class="mini-icon">🇬🇧</span> UK-based</div>
+    <div class="hero-mini-card"><span class="mini-icon">💬</span> Always reachable</div>
+  </div>
 </section>
 
-<section class="features">
-  <div class="card">
-    <h3>⚡ Fast Setup</h3>
-    <p>Launch your ideas quickly with simple tools and clean workflows.</p>
+<!-- TRUSTED BY -->
+<div class="trusted">
+  <div class="trusted-label">Worked with</div>
+  <div class="trusted-logos">
+    <span class="trusted-logo">Meadowfield</span>
+    <span class="trusted-logo">Birch & Co</span>
+    <span class="trusted-logo">Northgate Studio</span>
+    <span class="trusted-logo">Trellis Group</span>
+    <span class="trusted-logo">Hollow Oak</span>
   </div>
+</div>
 
-  <div class="card">
-    <h3>🔗 Smart Connections</h3>
-    <p>Link your thoughts, projects, and resources in one place.</p>
+<!-- HOW WE WORK -->
+<section class="how" id="how">
+  <div class="reveal">
+    <div class="section-badge">✦ Our process</div>
+    <h2>Simple steps, <em>great results</em></h2>
+    <p class="section-sub">No jargon, no runaround. We keep things clear and collaborative from day one.</p>
   </div>
-
-  <div class="card">
-    <h3>🚀 Build & Launch</h3>
-    <p>Turn ideas into real products without complexity.</p>
+  <div class="steps">
+    <div class="step reveal">
+      <div class="step-num">01</div>
+      <h3>Listen & plan</h3>
+      <p>We start with a proper conversation — no lengthy forms. We'll understand your goals, your audience, and what success looks like for you.</p>
+    </div>
+    <div class="step reveal d1">
+      <div class="step-num">02</div>
+      <h3>Design & build</h3>
+      <p>We create something that looks beautiful and works brilliantly. You'll see it take shape with regular check-ins and shared previews throughout.</p>
+    </div>
+    <div class="step reveal d2">
+      <div class="step-num">03</div>
+      <h3>Launch & grow</h3>
+      <p>When you're happy, we launch. And we stick around — updates, support, and new ideas whenever you need them.</p>
+    </div>
   </div>
 </section>
 
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="services-inner">
+    <div class="reveal">
+      <div class="section-badge">✦ What we do</div>
+      <h2>Everything digital, <em>under one roof</em></h2>
+      <p class="section-sub">From a simple landing page to a fully custom web app — we've got you covered.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <span class="service-emoji">🌐</span>
+        <h3>Website design & build</h3>
+        <p>Handcrafted websites that are fast, accessible, and a pleasure to use. Built to rank well and convert visitors into customers.</p>
+      </div>
+      <div class="service-card reveal d1">
+        <span class="service-emoji">📱</span>
+        <h3>Web & mobile apps</h3>
+        <p>Custom applications that solve real problems. Whether it's a client portal, booking system, or something entirely new — we build it properly.</p>
+      </div>
+      <div class="service-card reveal">
+        <span class="service-emoji">🛒</span>
+        <h3>E-commerce</h3>
+        <p>Online shops that make buying a joy. Shopify, custom, or headless — whatever fits your products and your customers best.</p>
+      </div>
+      <div class="service-card reveal d1">
+        <span class="service-emoji">✏️</span>
+        <h3>Brand & identity</h3>
+        <p>Logos, colours, and a visual language that feels unmistakably you. Cohesive design that works across every touchpoint.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORK -->
+<section class="work" id="work">
+  <div class="reveal">
+    <div class="section-badge">✦ Recent projects</div>
+    <h2>Work we're <em>proud of</em></h2>
+    <p class="section-sub">A few projects from our recent portfolio.</p>
+  </div>
+  <div class="projects">
+    <div class="project-card reveal">
+      <div class="project-thumb thumb-1">🌿</div>
+      <div class="project-info">
+        <h3>Meadowfield Gardens</h3>
+        <p>A boutique garden centre needing a fresh online home with online ordering.</p>
+        <div class="project-tags">
+          <span class="tag">E-commerce</span>
+          <span class="tag">Shopify</span>
+          <span class="tag">Branding</span>
+        </div>
+      </div>
+    </div>
+    <div class="project-card reveal d1">
+      <div class="project-thumb thumb-2">📋</div>
+      <div class="project-info">
+        <h3>Trellis Client Portal</h3>
+        <p>A bespoke client management dashboard replacing a tangle of spreadsheets.</p>
+        <div class="project-tags">
+          <span class="tag">Web App</span>
+          <span class="tag">React</span>
+          <span class="tag">Dashboard</span>
+        </div>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-thumb thumb-3">🏠</div>
+      <div class="project-info">
+        <h3>Northgate Property</h3>
+        <p>A sleek property agency site with live listings and a self-service tenant portal.</p>
+        <div class="project-tags">
+          <span class="tag">Website</span>
+          <span class="tag">Integrations</span>
+          <span class="tag">SEO</span>
+        </div>
+      </div>
+    </div>
+    <div class="project-card reveal d1">
+      <div class="project-thumb thumb-4">☕</div>
+      <div class="project-info">
+        <h3>Hollow Oak Coffee</h3>
+        <p>Brand identity and e-commerce store for an independent specialty roaster.</p>
+        <div class="project-tags">
+          <span class="tag">Branding</span>
+          <span class="tag">E-commerce</span>
+          <span class="tag">Packaging</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="testimonials-inner">
+    <div class="reveal">
+      <div class="section-badge">✦ Kind words</div>
+      <h2>What our clients <em>say</em></h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi reveal">
+        <div class="testi-stars">★★★★★</div>
+        <p>Working with DotKnot was genuinely a pleasure. They listened carefully, didn't bamboozle us with tech-speak, and delivered a site we absolutely love. Our enquiries doubled in the first month.</p>
+        <div class="testi-author">
+          <div class="avatar">🌿</div>
+          <div>
+            <div class="author-name">Helen Marsh</div>
+            <div class="author-co">Meadowfield Gardens</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi reveal d1">
+        <div class="testi-stars">★★★★★</div>
+        <p>We'd been burned by agencies before. DotKnot were refreshingly straightforward — honest about timelines, quick to respond, and the end product was exactly what we needed. Will absolutely use them again.</p>
+        <div class="testi-author">
+          <div class="avatar">📋</div>
+          <div>
+            <div class="author-name">James Corrigan</div>
+            <div class="author-co">Trellis Group</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi reveal d2">
+        <div class="testi-stars">★★★★★</div>
+        <p>They took our scrappy mood board and turned it into a brand we're truly proud of. The website is fast, gorgeous, and our customers keep commenting on how easy it is to navigate.</p>
+        <div class="testi-author">
+          <div class="avatar">☕</div>
+          <div>
+            <div class="author-name">Aisha Brennan</div>
+            <div class="author-co">Hollow Oak Coffee</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="reveal">
+    <div class="section-badge">✦ Pricing</div>
+    <h2>Clear prices, <em>no surprises</em></h2>
+    <p class="section-sub">Fixed-fee projects so you always know what you're getting. Need something custom? Just ask.</p>
+  </div>
+  <div class="pricing-grid">
+    <div class="price-card reveal">
+      <p class="plan-name">Starter</p>
+      <div class="price-big"><sup>£</sup>1,200</div>
+      <p class="price-period">one-off</p>
+      <p class="price-desc">Perfect for small businesses that need a clean, professional web presence.</p>
+      <ul class="price-features">
+        <li>Up to 5 pages</li>
+        <li>Mobile-responsive design</li>
+        <li>Contact form</li>
+        <li>Basic SEO setup</li>
+        <li>2 rounds of revisions</li>
+      </ul>
+      <button class="price-btn">Get started</button>
+    </div>
+    <div class="price-card pop reveal d1">
+      <div class="pop-label">Most popular</div>
+      <p class="plan-name">Studio</p>
+      <div class="price-big"><sup>£</sup>3,500</div>
+      <p class="price-period">one-off</p>
+      <p class="price-desc">A full-featured website for growing businesses that want to stand out.</p>
+      <ul class="price-features">
+        <li>Up to 15 pages</li>
+        <li>Custom design & animations</li>
+        <li>CMS integration</li>
+        <li>Full SEO & performance audit</li>
+        <li>E-commerce ready</li>
+        <li>3 months of support included</li>
+      </ul>
+      <button class="price-btn">Start a project</button>
+    </div>
+    <div class="price-card reveal d2">
+      <p class="plan-name">Custom</p>
+      <div class="price-big" style="font-size:2.2rem; padding-top:.4rem">Let's talk</div>
+      <p class="price-period">&nbsp;</p>
+      <p class="price-desc">Web apps, portals, e-commerce at scale, or ongoing retainer work.</p>
+      <ul class="price-features">
+        <li>Everything in Studio</li>
+        <li>Web & mobile apps</li>
+        <li>API & third-party integrations</li>
+        <li>Dedicated project manager</li>
+        <li>Ongoing retainer available</li>
+      </ul>
+      <button class="price-btn">Book a call</button>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta" id="contact">
+  <div class="cta-inner reveal">
+    <div class="section-badge" style="background:rgba(232,130,90,.12);color:var(--peach);margin:0 auto 1.25rem;">✦ Say hello</div>
+    <h2>Got a project in <em>mind?</em></h2>
+    <p>Drop us your email and we'll be in touch — usually within a few hours. No hard sell, just a friendly chat.</p>
+    <div class="cta-form">
+      <input type="email" class="cta-input" placeholder="your@email.com">
+      <button class="btn-warm" style="white-space:nowrap">Let's talk →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
 <footer>
-  <p>© 2026 DotKnot.co.uk — Building the future, one idea at a time.</p>
+  <div class="footer-logo" style="display:flex;align-items:center;gap:.5rem;">
+    <svg width="32" height="32" viewBox="0 0 80 80">
+      <rect width="80" height="80" rx="18" fill="rgba(245,180,154,.12)"/>
+      <text font-family="Fraunces,Georgia,serif" font-weight="700" font-size="18" fill="#f5b49a" x="40" y="4"  text-anchor="middle" dominant-baseline="hanging">K</text>
+      <text font-family="Fraunces,Georgia,serif" font-weight="700" font-size="18" fill="#f5b49a" x="40" y="24" text-anchor="middle" dominant-baseline="hanging">N</text>
+      <text font-family="Fraunces,Georgia,serif" font-weight="700" font-size="18" fill="#f5b49a" x="40" y="60" text-anchor="middle" dominant-baseline="hanging">T</text>
+      <text font-family="Fraunces,Georgia,serif" font-weight="700" font-size="18" fill="#fdf8f2" x="4"  y="40" text-anchor="start" dominant-baseline="middle">D</text>
+      <text font-family="Fraunces,Georgia,serif" font-weight="700" font-size="18" fill="#fdf8f2" x="58" y="40" text-anchor="start" dominant-baseline="middle">T</text>
+      <circle cx="40" cy="40" r="13" fill="#1e1510" stroke="none"/>
+      <circle cx="40" cy="40" r="13" fill="none" stroke="#fdf8f2" stroke-width="3"/>
+      <path d="M40 27 A13 13 0 0 1 40 53" fill="none" stroke="#f5b49a" stroke-width="3"/>
+      <circle cx="40" cy="40" r="3" fill="#f5b49a"/>
+    </svg>
+    DotKnot<span class="dot">.</span>
+  </div>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Instagram</a>
+    <a href="#">LinkedIn</a>
+  </div>
+  <div class="footer-copy">© 2025 DotKnot · dotknot.co.uk</div>
 </footer>
 
+<script>
+  // Scroll reveal
+  const items = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  items.forEach(el => obs.observe(el));
+
+  // CTA button feedback
+  document.querySelector('.cta-form button').addEventListener('click', function() {
+    const input = document.querySelector('.cta-input');
+    if (input.value.includes('@')) {
+      this.textContent = '✓ We\'ll be in touch!';
+      this.style.background = '#6b8f71';
+      input.value = '';
+      setTimeout(() => { this.textContent = 'Let\'s talk →'; this.style.background = ''; }, 3000);
+    } else {
+      input.style.borderColor = 'var(--peach)';
+      input.focus();
+      setTimeout(() => input.style.borderColor = '', 1500);
+    }
+  });
+</script>
 </body>
 </html>
